@@ -1,6 +1,7 @@
 package com.example.cis183_databaseexample;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -60,6 +61,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void initAllTables()
     {
         initUsers();
+        initPosts();
     }
 
     //this function will only be used once to add dummy data to my users table
@@ -89,6 +91,39 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
     }
 
+    private void initPosts()
+    {
+        //this will do its own error checking
+        //we only want to add the data if nothing is currently in the table
+        //this wil ensure we do not add the data more than once.
+        if(countRecordsFromTable(posts_table_name) == 0)
+        {
+            //get a writable version of the database
+            //we need a writable version because we are going to write to the database
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            //insert dummy data into the posts table if there is nothing in the table
+            //we do not want to do this more than once so it needs to be surrounded by an if statement
+            //the user ids (pk) for the dummy data will be added manully using the following key based
+            //on the dummy data entered for the users:
+            //|1 - Zackary| 2 - Shannon| 3 - Gabriel| 4 - Harrison| 5 - Tito| 6 - Willow|
+            //when a user posts the userId will populate automatically based off which user is logged in
+
+            db.execSQL("INSERT INTO " + posts_table_name + " (userId, category, postData) VALUES (1, 'Technology', 'This is my first post about tech. I am posting about my new computer.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userId, category, postData) VALUES (2, 'Gardening', 'I love gardening.  This is my first post about gardening.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userId, category, postData) VALUES (2, 'Gardening', 'Corn.  This year I got a bunch of differnet types of corn to grow in my garden.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userId, category, postData) VALUES (3, 'Baeball', 'I love baseball.  I am playing cathcer, pitch, and outfield.  I got a few homeruns this year');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userId, category, postData) VALUES (3, 'Gaming', 'Videogames are so fun.  My favorite videogame right now is Good Job.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userId, category, postData) VALUES (4, 'Cartoons', 'Bluey is the best cartoon in the World!  I could watch it all day if my parents let me.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userId, category, postData) VALUES (5, 'Squirrels', 'I hate squirrels!');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userId, category, postData) VALUES (6, 'Squirrels', 'I love squirrels!');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userId, category, postData) VALUES (1, 'Teaching', 'I enjoy teaching my students about Software Engineering');");
+
+            db.close();
+        }
+
+    }
+
     public int countRecordsFromTable(String tableName)
     {
         //get an instance of the a readable database
@@ -103,5 +138,83 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.close();
 
         return numRows;
+    }
+
+    public void getAllUserDataGivenId(int userId)
+    {
+        //if the userId was found in the table then this userId has user data associated with it
+        if(userIdExists(userId))
+        {
+            //I will retrieve all of this informating from the user table given the id passed to me
+            User loggedInUser = new User();
+
+            //query to get the user data
+            String selectAll = "SELECT * FROM " + users_table_name + " WHERE userId = '" + userId + "';";
+
+            //get a readable version of the database
+            SQLiteDatabase db = this.getReadableDatabase();
+
+            //run the query
+            Cursor cursor = db.rawQuery(selectAll, null);
+
+            //see if there was anything returned
+            if(cursor != null)
+            {
+                //move the cursor to the first record
+                cursor.moveToFirst();
+
+                //parse the record into individual columns
+                loggedInUser.setId(cursor.getInt(0));
+                loggedInUser.setFname(cursor.getString(1));
+                loggedInUser.setLname(cursor.getString(2));
+                loggedInUser.setEmail(cursor.getString(3));
+
+                SessionData.setLoggedInUser(loggedInUser);
+            }
+            else
+            {
+                SessionData.setLoggedInUser(null);
+            }
+        }
+    }
+
+    public boolean userIdExists(int userId)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //I want to count the number of records that contain the userId that was passed to me
+        //There are only two viable values for the count query to return to me:
+        //0 - the userId was not found
+        //1 - the userId was found
+        //we cannot get anything else returned because the userId is the primary key
+        //This ensures that no two people can have the same userId
+
+        //SELECT count(userId) FROM users WHERE userId = '1';
+        String checkUserId = "SELECT count(userId) FROM " + users_table_name + " WHERE userId = '" + userId + "';";
+
+        //run the query
+        //cursor could return more than one value depending on the query that we run
+        //in this case it should only return one value
+        Cursor cursor = db.rawQuery(checkUserId, null);
+
+
+        //move the cursor to the first returned value
+        cursor.moveToFirst();
+        //we are only expecting one thing returned to us so the index should be 0
+        int count = cursor.getInt(0);
+
+        db.close();
+
+
+        //if the count is not zero the userId was found in the database;
+        if(count != 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 }
