@@ -1,5 +1,6 @@
 package com.example.cis183_databaseexample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -76,12 +77,15 @@ public class MainActivity extends AppCompatActivity
                 //we can look to session data to ensure someone is logged in
                 if(SessionData.getLoggedInUser() != null)
                 {
-                    User u = SessionData.getLoggedInUser();
-                    Log.d("Logged in: ", u.getFname() + " " + u.getLname());
+                    //User u = SessionData.getLoggedInUser();
+                    //Log.d("Logged in: ", u.getFname() + " " + u.getLname());
+                    startActivity(new Intent(MainActivity.this, WelcomePage.class));
                 }
                 else {
                     //user does not exists
                     //error message
+                    //I would make some kind of invisible error message and make it
+                    //visible if I reached this part
                 }
             }
         });

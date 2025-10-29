@@ -6,6 +6,8 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class DatabaseHelper extends SQLiteOpenHelper
 {
     private static final String database_name = "Blog.db";
@@ -216,5 +218,60 @@ public class DatabaseHelper extends SQLiteOpenHelper
             return false;
         }
 
+    }
+
+    public int getNumPosts()
+    {
+        int numPosts = 0;
+        String selectStatement = "SELECT COUNT(userId) FROM " + posts_table_name + " WHERE userId = '" + SessionData.getLoggedInUser().getId() + "';";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(selectStatement, null);
+
+        if(cursor != null)
+        {
+            cursor.moveToFirst();
+            //give getInt 0 for the first thing that is returned.  This should always return
+            //on thing because I am using a count function in sql
+            //using getInt because count will return an int
+
+            numPosts = cursor.getInt(0);
+        }
+        else
+        {
+            //this would be an error for userId not existing.
+        }
+
+        db.close();
+
+        return numPosts;
+
+    }
+
+    public ArrayList<String> getAllPosts()
+    {
+        String selectStatement = "SELECT postData FROM " + posts_table_name + " WHERE userId = '" + SessionData.getLoggedInUser().getId() + "';";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(selectStatement, null);
+
+        ArrayList<String> posts = new ArrayList<>();
+
+        if(cursor.moveToFirst())
+        {
+            //we need a loop for this because we do not know how many
+            //posts a user can have (0-n)
+            do
+            {
+                //this is only column 0 because we are only gettign postData
+                //returned to us by the query.
+                String post = cursor.getString(0);
+                posts.add(post);
+            }
+            while(cursor.moveToNext());
+        }
+
+        db.close();
+        return posts;
     }
 }

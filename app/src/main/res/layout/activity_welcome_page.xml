@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WelcomePage">
+
+    <TextView
+        android:id="@+id/tv_v_welcome_wMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:layout_marginBottom="20dp"
+        android:text="Welcome Bob"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_v_welcome_numPosts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_v_welcome_numPosts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginBottom="2dp"
+        android:text="# of Posts: 5"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/lv_v_welcome_listPosts"
+        app:layout_constraintStart_toStartOf="@+id/tv_v_welcome_wMessage"
+        app:layout_constraintTop_toBottomOf="@+id/tv_v_welcome_wMessage" />
+
+    <ListView
+        android:id="@+id/lv_v_welcome_listPosts"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="46dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_v_welcome_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_v_welcome_numPosts" />
+
+    <Button
+        android:id="@+id/btn_v_welcome_back"
+        android:layout_width="166dp"
+        android:layout_height="97dp"
+        android:layout_marginStart="34dp"
+        android:layout_marginEnd="53dp"
+        android:layout_marginBottom="45dp"
+        android:text="Back"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_v_welcome_makePost"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lv_v_welcome_listPosts" />
+
+    <Button
+        android:id="@+id/btn_v_welcome_makePost"
+        android:layout_width="168dp"
+        android:layout_height="97dp"
+        android:layout_marginEnd="42dp"
+        android:text="Post"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_v_welcome_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_v_welcome_back"
+        app:layout_constraintTop_toTopOf="@+id/btn_v_welcome_back" />
+</androidx.constraintlayout.widget.ConstraintLayout>
