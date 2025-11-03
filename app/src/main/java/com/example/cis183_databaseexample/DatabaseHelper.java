@@ -274,4 +274,51 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.close();
         return posts;
     }
+
+    public void addUserToDB(User u)
+    {
+        //get an instance of a writeable database
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        //we need out sql insert statement to look like this:
+        //INSERT INTO users (fname, lname, email) VALUES ('Bobby','Smith','BSmith@gmail.com');
+        String insertUser = "INSERT INTO " + users_table_name + " (fname, lname, email) VALUES ('" + u.getFname() + "','" + u.getLname() + "','" + u.getEmail() + "');";
+
+        db.execSQL(insertUser);
+
+        db.close();
+    }
+
+    public ArrayList<Integer> findUserGivenCriteria(String f, String l)
+    {
+        ArrayList<Integer> listUsers = new ArrayList<>();
+
+        String selectStatement = "SELECT userId FROM " + users_table_name + " WHERE ";
+
+        //write java code to complete the selectStatement
+        //the user left this blank and do not care about this criteria
+        if(f.isEmpty())
+        {
+            selectStatement += "fname is not null and ";
+        }
+        else
+        {
+            selectStatement += "fname = '" + f + "' and ";
+        }
+
+        if(l.isEmpty())
+        {
+            selectStatement += "lname is not null;";
+        }
+        else
+        {
+            selectStatement += "lname = '" + l + "';";
+        }
+
+        //SELECT userId FROM users where fname is not null and lname is not null;
+        //SELECT userId FROM users where fname is not null and lname = l;
+        //SELECT userId FROM users where fname = f and lname is not null;
+        //SELECT userId FROM users where fname = f and lname = l;
+
+    }
 }

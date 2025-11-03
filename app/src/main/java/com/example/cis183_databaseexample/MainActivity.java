@@ -89,5 +89,12 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
+        btn_j_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Register.class));
+            }
+        });
     }
 }
