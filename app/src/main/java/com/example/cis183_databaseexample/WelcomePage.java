@@ -58,6 +58,10 @@ public class WelcomePage extends AppCompatActivity
 
         //set the listview
         setListViewWithPosts();
+        String fname = "";
+        String lname = "";
+        String category = "Dogs";
+        db.GetAllPostsGivenCriteria(fname, lname, category);
 
     }
 

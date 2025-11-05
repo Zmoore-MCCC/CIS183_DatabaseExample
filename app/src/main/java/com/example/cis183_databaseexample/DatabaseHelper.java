@@ -1,10 +1,13 @@
 package com.example.cis183_databaseexample;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Debug;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -320,5 +323,81 @@ public class DatabaseHelper extends SQLiteOpenHelper
         //SELECT userId FROM users where fname = f and lname is not null;
         //SELECT userId FROM users where fname = f and lname = l;
 
+        return listUsers;
+
+    }
+
+
+    public ArrayList<String> GetAllPostsGivenCriteria(String fname, String lname, String cat)
+    {
+        ArrayList<String> listPosts = new ArrayList<>();
+        //because we want to list both post data and the users name, we will need to join
+        //our two tables.  We can join tables based off primary keys and foreign keys
+
+        //INNER JOIN: will return only the rows where there is a math between posts.userID and users.userID
+        //SELECT Users.fname, Users.lname, Posts.Category, Posts.PostData
+        //FROM posts
+        //INNER JOIN Users ON Posts Posts.userId = users.userId
+        //WHERE fname = '' and lname = '' and category = '';
+        String fnameCol = users_table_name + ".fname";
+        String lnameCol = users_table_name + ".lname";
+        String categoryCol = posts_table_name + ".category";
+        String postDataCol = posts_table_name + ".postData";
+        String userIdU = users_table_name + ".userId";
+        String userIdP = posts_table_name + ".userId";
+        String selectStatement = "SELECT " + fnameCol + "," + lnameCol + "," + categoryCol + "," + postDataCol + " FROM " + posts_table_name + " INNER JOIN "+ users_table_name + " ON " + userIdU + " = " + userIdP + " WHERE ";
+
+        if(fname.isEmpty())
+        {
+            selectStatement += "fname is not null and ";
+        }
+        else
+        {
+            selectStatement += "fname = '" + fname + "' and ";
+        }
+
+        if(lname.isEmpty())
+        {
+            selectStatement += "lname is not null and ";
+        }
+        else
+        {
+            selectStatement += "lname = '" + lname + "' and ";
+        }
+
+        if(cat.isEmpty())
+        {
+            selectStatement += "category is not null;";
+        }
+        else
+        {
+            selectStatement += "category = '" + cat + "';";
+        }
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(selectStatement, null);
+
+        if(cursor.moveToFirst())
+        {
+            do
+            {
+                //we will receive 4 columns from the query
+                String firstname = cursor.getString(0);
+                String lastname = cursor.getString(1);
+                String category = cursor.getString(2);
+                String post = cursor.getString(3);
+
+                String info = firstname + "  " + lastname + "  " + category + "  "  + post;
+
+                listPosts.add(info);
+            }
+            while(cursor.moveToNext());
+        }
+        for(int i = 0; i < listPosts.size(); i++)
+        {
+            Log.d("POSTS WITH CRITERIA: ", listPosts.get(i));
+        }
+        return listPosts;
     }
 }
