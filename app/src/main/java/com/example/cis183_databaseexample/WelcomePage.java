@@ -1,5 +1,6 @@
 package com.example.cis183_databaseexample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.se.omapi.Session;
 import android.util.Log;
@@ -20,6 +21,7 @@ public class WelcomePage extends AppCompatActivity
 {
     Button btn_j_back;
     Button btn_j_post;
+    Button btn_j_update;
     ListView lv_j_posts;
     TextView tv_j_welcome;
     TextView tv_j_numPosts;
@@ -41,6 +43,7 @@ public class WelcomePage extends AppCompatActivity
         //GUI
         btn_j_back = findViewById(R.id.btn_v_welcome_back);
         btn_j_post = findViewById(R.id.btn_v_welcome_makePost);
+        btn_j_update = findViewById(R.id.btn_v_welcome_updateUserData);
         tv_j_welcome = findViewById(R.id.tv_v_welcome_wMessage);
         tv_j_numPosts = findViewById(R.id.tv_v_welcome_numPosts);
         lv_j_posts = findViewById(R.id.lv_v_welcome_listPosts);
@@ -82,6 +85,16 @@ public class WelcomePage extends AppCompatActivity
             public void onClick(View v)
             {
 
+            }
+        });
+
+        //Update user click event
+        btn_j_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                //start the update page.
+                startActivity(new Intent(WelcomePage.this, UpdateUser.class));
             }
         });
     }

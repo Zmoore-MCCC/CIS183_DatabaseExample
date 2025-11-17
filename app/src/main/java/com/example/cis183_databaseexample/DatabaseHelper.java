@@ -400,4 +400,23 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
         return listPosts;
     }
+
+    public void updateUser(User u)
+    {
+        //parse the data
+        int id = u.getId();
+        String f = u.getFname();
+        String l = u.getLname();
+        String e = u.getEmail();
+
+        //UPDATE Users
+        //SET fname = 'asdf', lname = 'asdf', email = 'afdsa'
+        //WHERE userId = '1'
+
+        String updateCommand = "UPDATE " + users_table_name + " SET fname = '" + f + "', lname = '" + l + "', email = '" + e + "' WHERE userId = '" + id + "';";
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(updateCommand);
+
+        db.close();
+    }
 }
